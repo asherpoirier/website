@@ -310,33 +310,59 @@ main() {
     check_root
     echo ""
     
-    # Check prerequisites
-    print_info "Step 1: Checking Prerequisites..."
-    check_nodejs
-    check_yarn
-    check_python
-    check_pip
-    check_mongodb
+    # Detect OS
+    print_info "Step 1: Detecting Operating System..."
+    detect_os
+    echo ""
+    
+    # Update system
+    print_info "Step 2: Updating System Packages..."
+    update_system
+    echo ""
+    
+    # Install basic dependencies
+    print_info "Step 3: Installing Basic Dependencies..."
+    install_basic_deps
+    echo ""
+    
+    # Install Node.js
+    print_info "Step 4: Installing Node.js..."
+    install_nodejs
+    echo ""
+    
+    # Install Yarn
+    print_info "Step 5: Installing Yarn..."
+    install_yarn
+    echo ""
+    
+    # Install Python
+    print_info "Step 6: Installing Python..."
+    install_python
+    echo ""
+    
+    # Install MongoDB (optional)
+    print_info "Step 7: MongoDB Setup..."
+    install_mongodb
     echo ""
     
     # Check environment files
-    print_info "Step 2: Checking Environment Configuration..."
+    print_info "Step 8: Checking Environment Configuration..."
     check_env_files
     display_mongo_info
     echo ""
     
     # Install backend
-    print_info "Step 3: Installing Backend..."
+    print_info "Step 9: Installing Backend Dependencies..."
     install_backend
     echo ""
     
     # Install frontend
-    print_info "Step 4: Installing Frontend..."
+    print_info "Step 10: Installing Frontend Dependencies..."
     install_frontend
     echo ""
     
     # Create start script
-    print_info "Step 5: Creating Helper Scripts..."
+    print_info "Step 11: Creating Helper Scripts..."
     create_start_script
     echo ""
     
@@ -345,12 +371,19 @@ main() {
     echo -e "${GREEN}  Installation Complete! ✓${NC}"
     echo "================================================"
     echo ""
+    echo "All dependencies have been installed:"
+    echo "  ✓ Node.js $(node -v)"
+    echo "  ✓ Yarn $(yarn -v)"
+    echo "  ✓ Python $(python3 --version | cut -d' ' -f2)"
+    echo "  ✓ Backend dependencies"
+    echo "  ✓ Frontend dependencies"
+    echo ""
     echo "Next steps:"
     echo "  1. Configure WHMCS URLs in /app/frontend/src/data/mock.js"
     echo "  2. Update Telegram username if needed (currently: @customcloudtv)"
     echo "  3. Start the website:"
     echo "     - Using supervisor: sudo supervisorctl start all"
-    echo "     - Or manually: ./start.sh"
+    echo "     - Or manually: cd /app && ./start.sh"
     echo ""
     echo "Access your website at:"
     echo "  - Frontend: http://localhost:3000"
