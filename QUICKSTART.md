@@ -2,19 +2,23 @@
 
 ## Automated Installation (One Command)
 
-The install script automatically installs **ALL** dependencies (Node.js, Python, Yarn, etc.):
+The install script automatically installs **ALL** dependencies AND creates configuration files:
 
 ```bash
 sudo bash install.sh
 ```
 
-This will install:
-✓ Node.js 20.x
-✓ Yarn
-✓ Python 3 + pip
-✓ All backend dependencies
-✓ All frontend dependencies
-✓ MongoDB (optional)
+This will automatically:
+✓ Install Node.js 20.x
+✓ Install Yarn
+✓ Install Python 3 + pip (PEP 668 compliant)
+✓ Install MongoDB (optional - you'll be asked)
+✓ Create .env files automatically
+✓ Install all backend dependencies
+✓ Install all frontend dependencies
+✓ Create start scripts
+
+**No manual configuration needed!**
 
 ## Start Website
 
