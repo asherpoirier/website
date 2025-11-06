@@ -48,3 +48,11 @@ button:active {
 .group:hover {
   transform: translateY(-2px);
 }
+
+/* Hide any Emergent watermark badges */
+#emergent-badge,
+a[href*="emergent"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
