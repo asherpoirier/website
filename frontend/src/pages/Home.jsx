@@ -47,7 +47,7 @@ export const Home = () => {
             <a href="#pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</a>
             <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors">Reviews</a>
             <a href="#faq" className="text-slate-300 hover:text-white transition-colors">FAQ</a>
-            <Button onClick={handleTelegramSupport} variant="outline" size="sm" className="border-slate-700 hover:bg-slate-800">
+            <Button onClick={handleTelegramSupport} variant="outline" size="sm" className="border-slate-600 bg-slate-800/60 hover:bg-slate-700 text-white">
               <MessageCircle className="w-4 h-4 mr-2" />
               Support
             </Button>
