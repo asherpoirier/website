@@ -180,32 +180,39 @@ copy_project_files() {
     
     # Create installation directory
     mkdir -p $INSTALL_DIR
-    cd $INSTALL_DIR
     
     # If running from /app, copy files
     if [ -d "/app/backend" ] && [ -d "/app/frontend" ]; then
         print_info "Copying project files from /app..."
         
-        # Copy backend
-        if [ ! -d "$INSTALL_DIR/backend" ]; then
-            cp -r /app/backend $INSTALL_DIR/
-            print_success "Backend files copied"
+        # Copy backend (remove existing to ensure fresh copy)
+        print_info "Copying backend..."
+        rm -rf $INSTALL_DIR/backend
+        cp -r /app/backend $INSTALL_DIR/
+        print_success "Backend files copied"
+        
+        # Copy frontend (remove existing to ensure fresh copy)
+        print_info "Copying frontend..."
+        rm -rf $INSTALL_DIR/frontend
+        cp -r /app/frontend $INSTALL_DIR/
+        print_success "Frontend files copied"
+        
+        # Verify files were copied
+        if [ -f "$INSTALL_DIR/backend/requirements.txt" ]; then
+            print_success "Backend files verified"
         else
-            print_success "Backend directory exists"
+            print_error "Backend files incomplete"
         fi
         
-        # Copy frontend
-        if [ ! -d "$INSTALL_DIR/frontend" ]; then
-            cp -r /app/frontend $INSTALL_DIR/
-            print_success "Frontend files copied"
+        if [ -f "$INSTALL_DIR/frontend/package.json" ]; then
+            print_success "Frontend files verified"
         else
-            print_success "Frontend directory exists"
+            print_error "Frontend files incomplete"
         fi
     else
-        print_info "Creating project structure..."
-        mkdir -p $INSTALL_DIR/backend
-        mkdir -p $INSTALL_DIR/frontend
-        print_success "Directories created"
+        print_error "Source files not found in /app"
+        print_info "Please ensure project exists in /app/backend and /app/frontend"
+        exit 1
     fi
 }
 
