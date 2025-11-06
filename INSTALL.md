@@ -172,6 +172,24 @@ export YARN_NETWORK_TIMEOUT=600000
 sudo bash install.sh
 ```
 
+### Python PEP 668 Error (externally-managed-environment)
+
+**Problem**: Error when installing pip on Python 3.12+
+
+**Solution**: This is now handled automatically by the updated script. If you encounter this:
+```bash
+# Run the fix script
+sudo bash fix-python.sh
+
+# Or manually install pip via apt
+sudo apt-get install -y python3-pip python3-venv python3-full
+
+# Then continue with installation
+sudo bash install.sh
+```
+
+The backend uses a virtual environment, so this won't affect the application.
+
 ### Behind a Proxy
 
 **Problem**: Corporate firewall or proxy
