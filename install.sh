@@ -118,9 +118,11 @@ install_yarn() {
     print_success "Yarn installed successfully: $YARN_VERSION"
 }
 
-# Install Python
+# Install Python (PEP 668 Compliant)
 install_python() {
-    print_info "Installing Python..."
+    print_info "Installing Python and pip..."
+    
+    # Check if Python is installed
     if command -v python3 &> /dev/null; then
         PYTHON_VERSION=$(python3 --version)
         print_success "Python is already installed: $PYTHON_VERSION"
@@ -134,30 +136,19 @@ install_python() {
         fi
     fi
     
-    # Ensure pip and venv are installed via system packages (PEP 668 compliant)
+    # Install pip via system package manager (PEP 668 compliant - no get-pip.py)
+    print_info "Ensuring pip is installed via system packages..."
     if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
-        if ! dpkg -l | grep -q python3-pip; then
-            print_info "Installing pip via apt..."
-            apt-get install -y python3-pip python3-venv python3-full
-            print_success "pip installed successfully"
-        fi
+        apt-get install -y python3-pip python3-venv python3-full
+        print_success "pip and venv installed via apt"
     elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
-        if ! rpm -qa | grep -q python3-pip; then
-            print_info "Installing pip via yum..."
-            yum install -y python3-pip python3-virtualenv
-            print_success "pip installed successfully"
-        fi
+        yum install -y python3-pip python3-virtualenv
+        print_success "pip and virtualenv installed via yum"
     fi
     
-    # Verify pip is available
-    if command -v pip3 &> /dev/null; then
-        PYTHON_VERSION=$(python3 --version)
-        PIP_VERSION=$(pip3 --version 2>/dev/null || echo "pip (via venv)")
-        print_success "Python version: $PYTHON_VERSION"
-        print_success "pip is available (will be used in virtual environment)"
-    else
-        print_info "pip will be available in virtual environment"
-    fi
+    PYTHON_VERSION=$(python3 --version)
+    print_success "Python version: $PYTHON_VERSION"
+    print_success "pip will be used inside virtual environment (PEP 668 compliant)"
 }
 
 # Install MongoDB (optional - for local development)
