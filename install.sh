@@ -386,10 +386,9 @@ main() {
     install_mongodb
     echo ""
     
-    # Check environment files
-    print_info "Step 8: Checking Environment Configuration..."
-    check_env_files
-    display_mongo_info
+    # Create environment files
+    print_info "Step 8: Creating Environment Configuration..."
+    create_env_files
     echo ""
     
     # Install backend
