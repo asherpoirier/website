@@ -197,20 +197,30 @@ install_backend() {
     if [ ! -d "venv" ]; then
         print_info "Creating Python virtual environment..."
         python3 -m venv venv
+        if [ $? -ne 0 ]; then
+            print_error "Failed to create virtual environment"
+            print_info "Trying alternative method..."
+            python3 -m venv venv --system-site-packages
+        fi
         print_success "Virtual environment created"
     fi
     
     # Activate virtual environment
+    print_info "Activating virtual environment..."
     source venv/bin/activate
     
-    # Upgrade pip
-    print_info "Upgrading pip..."
-    pip install --upgrade pip
+    # Upgrade pip in virtual environment
+    print_info "Upgrading pip in virtual environment..."
+    python -m pip install --upgrade pip
     
     # Install requirements
     print_info "Installing Python packages from requirements.txt..."
     pip install -r requirements.txt
     print_success "Backend dependencies installed"
+    
+    # Show installed packages count
+    PKG_COUNT=$(pip list | wc -l)
+    print_success "Installed $PKG_COUNT Python packages"
     
     deactivate
     cd /app
