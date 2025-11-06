@@ -87,7 +87,7 @@ export const Home = () => {
               onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}
               size="lg" 
               variant="outline" 
-              className="border-slate-700 hover:bg-slate-800 text-lg px-8 py-6"
+              className="border-slate-600 bg-slate-800/60 hover:bg-slate-700 text-white text-lg px-8 py-6"
             >
               View Pricing
             </Button>
