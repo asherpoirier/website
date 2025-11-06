@@ -197,7 +197,19 @@ install_mongodb() {
 # Install Backend Dependencies
 install_backend() {
     print_info "Installing Backend Dependencies..."
-    cd /app/backend
+    
+    # Change to backend directory and verify
+    cd /app/backend || {
+        print_error "Failed to change to /app/backend"
+        exit 1
+    }
+    
+    # Verify requirements.txt exists
+    if [ ! -f "requirements.txt" ]; then
+        print_error "requirements.txt not found in /app/backend"
+        ls -la /app/backend/
+        exit 1
+    fi
     
     # Create virtual environment if it doesn't exist
     if [ ! -d "venv" ]; then
@@ -215,13 +227,16 @@ install_backend() {
     print_info "Activating virtual environment..."
     source venv/bin/activate
     
+    # Verify we're in the right directory
+    print_info "Current directory: $(pwd)"
+    
     # Upgrade pip in virtual environment
     print_info "Upgrading pip in virtual environment..."
     python -m pip install --upgrade pip
     
-    # Install requirements
+    # Install requirements with full path to be safe
     print_info "Installing Python packages from requirements.txt..."
-    pip install -r requirements.txt
+    pip install -r /app/backend/requirements.txt
     print_success "Backend dependencies installed"
     
     # Show installed packages count
