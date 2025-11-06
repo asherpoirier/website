@@ -37,9 +37,9 @@ export const Home = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <img 
-              src="https://customer-assets.emergentagent.com/job_6ba45c1d-d99b-48ed-93f3-1f3a2b9f4763/artifacts/ppgulcfs_ChatGPT%20Image%20Nov%206%2C%202025%2C%2012_54_38%20AM.png" 
+              src="https://customer-assets.emergentagent.com/job_6ba45c1d-d99b-48ed-93f3-1f3a2b9f4763/artifacts/klw62bwx_ChatGPT%20Image%20Nov%206%2C%202025%2C%2012_54_38%20AM%20%281%29.png" 
               alt="Flux IPTV Logo" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </div>
           <nav className="hidden md:flex items-center space-x-8">
