@@ -2,11 +2,13 @@
 
 # Flux IPTV Website Installation Script
 # This script installs all dependencies and sets up the website
+# Includes automatic .env file creation and all compatibility fixes
 
 set -e  # Exit on any error
 
 echo "================================================"
 echo "  Flux IPTV Website - Installation Script"
+echo "  (Auto-configuring - Python 3.12 Compatible)"
 echo "================================================"
 echo ""
 
