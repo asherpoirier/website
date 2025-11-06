@@ -319,9 +319,9 @@ export const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
               <img 
-                src="https://customer-assets.emergentagent.com/job_6ba45c1d-d99b-48ed-93f3-1f3a2b9f4763/artifacts/ppgulcfs_ChatGPT%20Image%20Nov%206%2C%202025%2C%2012_54_38%20AM.png" 
+                src="https://customer-assets.emergentagent.com/job_6ba45c1d-d99b-48ed-93f3-1f3a2b9f4763/artifacts/klw62bwx_ChatGPT%20Image%20Nov%206%2C%202025%2C%2012_54_38%20AM%20%281%29.png" 
                 alt="Flux IPTV Logo" 
-                className="h-10 w-auto mb-4"
+                className="h-14 w-auto mb-4"
               />
               <p className="text-slate-400 text-sm">
                 Premium IPTV service delivering unlimited entertainment worldwide.
