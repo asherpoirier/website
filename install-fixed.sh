@@ -165,14 +165,26 @@ install_mongodb() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         print_info "Installing MongoDB..."
         if [[ "$OS" == "ubuntu" ]]; then
+            # Determine Ubuntu codename - use jammy for noble (24.04) since noble isn't supported yet
+            UBUNTU_CODENAME=$(lsb_release -cs)
+            if [[ "$UBUNTU_CODENAME" == "noble" ]]; then
+                UBUNTU_CODENAME="jammy"
+                print_info "Using Ubuntu 22.04 (jammy) repository for MongoDB (compatible with 24.04)"
+            fi
+            
             # Install MongoDB 7.0 for Ubuntu
             curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
-            echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+            echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu ${UBUNTU_CODENAME}/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+            
             apt-get update
-            apt-get install -y mongodb-org
-            systemctl start mongod
-            systemctl enable mongod
-            print_success "MongoDB installed and started"
+            if apt-get install -y mongodb-org; then
+                systemctl start mongod
+                systemctl enable mongod
+                print_success "MongoDB installed and started"
+            else
+                print_error "MongoDB installation failed"
+                print_info "You can use remote MongoDB instead. Just skip this step."
+            fi
         else
             print_info "Skipping MongoDB installation. Please install manually or use remote MongoDB."
         fi
