@@ -69,23 +69,35 @@ rm -rf $INSTALL_DIR/frontend
 cp -r /app/frontend $INSTALL_DIR/
 print_success "Frontend copied"
 
-# Verify critical files
-if [ ! -f "$INSTALL_DIR/backend/server.py" ]; then
-    print_error "server.py not found"
+# Brief pause to ensure filesystem sync
+sleep 1
+
+# Verify critical files exist
+print_info "Verifying files..."
+
+if [ -f "$INSTALL_DIR/backend/server.py" ]; then
+    print_success "server.py found"
+else
+    print_error "server.py not found in $INSTALL_DIR/backend/"
+    ls -la $INSTALL_DIR/backend/
     exit 1
 fi
 
-if [ ! -f "$INSTALL_DIR/backend/requirements.txt" ]; then
+if [ -f "$INSTALL_DIR/backend/requirements.txt" ]; then
+    print_success "requirements.txt found"
+else
     print_error "requirements.txt not found"
     exit 1
 fi
 
-if [ ! -f "$INSTALL_DIR/frontend/package.json" ]; then
+if [ -f "$INSTALL_DIR/frontend/package.json" ]; then
+    print_success "package.json found"
+else
     print_error "package.json not found"
     exit 1
 fi
 
-print_success "All critical files verified"
+print_success "All files verified"
 
 # Create/update .env files
 print_info "Creating environment files..."
