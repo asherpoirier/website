@@ -149,5 +149,5 @@ export const faqs = [
   }
 ];
 
-export const telegramSupportUrl = "https://t.me/fluxiptv_support";
+export const telegramSupportUrl = "https://t.me/customcloudtv";
 export const freeTrialWhmcsUrl = "https://your-whmcs-domain.com/cart.php?a=add&pid=trial";
