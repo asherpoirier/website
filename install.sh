@@ -124,27 +124,38 @@ install_python() {
         print_success "Python is already installed: $PYTHON_VERSION"
     else
         if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
-            apt-get install -y python3 python3-pip python3-venv
+            apt-get install -y python3 python3-pip python3-venv python3-full
             print_success "Python installed successfully"
         elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
-            yum install -y python3 python3-pip
+            yum install -y python3 python3-pip python3-virtualenv
             print_success "Python installed successfully"
         fi
     fi
     
-    # Ensure pip is installed
-    if ! command -v pip3 &> /dev/null; then
-        print_info "Installing pip..."
-        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-        python3 get-pip.py
-        rm get-pip.py
-        print_success "pip installed successfully"
+    # Ensure pip and venv are installed via system packages (PEP 668 compliant)
+    if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
+        if ! dpkg -l | grep -q python3-pip; then
+            print_info "Installing pip via apt..."
+            apt-get install -y python3-pip python3-venv python3-full
+            print_success "pip installed successfully"
+        fi
+    elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
+        if ! rpm -qa | grep -q python3-pip; then
+            print_info "Installing pip via yum..."
+            yum install -y python3-pip python3-virtualenv
+            print_success "pip installed successfully"
+        fi
     fi
     
-    PYTHON_VERSION=$(python3 --version)
-    PIP_VERSION=$(pip3 --version)
-    print_success "Python version: $PYTHON_VERSION"
-    print_success "pip version: $PIP_VERSION"
+    # Verify pip is available
+    if command -v pip3 &> /dev/null; then
+        PYTHON_VERSION=$(python3 --version)
+        PIP_VERSION=$(pip3 --version 2>/dev/null || echo "pip (via venv)")
+        print_success "Python version: $PYTHON_VERSION"
+        print_success "pip is available (will be used in virtual environment)"
+    else
+        print_info "pip will be available in virtual environment"
+    fi
 }
 
 # Install MongoDB (optional - for local development)
