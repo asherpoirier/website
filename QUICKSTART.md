@@ -1,10 +1,20 @@
 # Flux IPTV - Quick Start Guide
 
-## Installation (One Command)
+## Automated Installation (One Command)
+
+The install script automatically installs **ALL** dependencies (Node.js, Python, Yarn, etc.):
 
 ```bash
-chmod +x install.sh && ./install.sh
+sudo bash install.sh
 ```
+
+This will install:
+✓ Node.js 20.x
+✓ Yarn
+✓ Python 3 + pip
+✓ All backend dependencies
+✓ All frontend dependencies
+✓ MongoDB (optional)
 
 ## Start Website
 
