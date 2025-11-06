@@ -39,10 +39,11 @@ else
     exit 1
 fi
 
-# Update system
+# Update system and install basic tools
 print_info "Updating system..."
 apt-get update -qq
 apt-get upgrade -y -qq
+apt-get install -y curl wget git unzip
 print_success "System updated"
 
 # Install Node.js
