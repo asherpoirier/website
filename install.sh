@@ -29,12 +29,52 @@ print_info() {
     echo -e "${YELLOW}➜ $1${NC}"
 }
 
-# Check if running as root for system packages
+# Check if running as root
 check_root() {
-    if [ "$EUID" -eq 0 ]; then 
-        print_info "Running as root"
+    if [ "$EUID" -ne 0 ]; then 
+        print_error "This script must be run as root or with sudo"
+        echo "Please run: sudo bash install.sh"
+        exit 1
     else
-        print_info "Running as non-root user (may need sudo for system packages)"
+        print_success "Running as root"
+    fi
+}
+
+# Detect OS
+detect_os() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        OS=$ID
+        VER=$VERSION_ID
+        print_info "Detected OS: $OS $VER"
+    else
+        print_error "Cannot detect OS"
+        exit 1
+    fi
+}
+
+# Update system packages
+update_system() {
+    print_info "Updating system packages..."
+    if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
+        apt-get update -y
+        apt-get upgrade -y
+        print_success "System updated"
+    elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
+        yum update -y
+        print_success "System updated"
+    fi
+}
+
+# Install basic dependencies
+install_basic_deps() {
+    print_info "Installing basic dependencies..."
+    if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
+        apt-get install -y curl wget git build-essential software-properties-common
+        print_success "Basic dependencies installed"
+    elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
+        yum install -y curl wget git gcc gcc-c++ make
+        print_success "Basic dependencies installed"
     fi
 }
 
