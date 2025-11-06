@@ -78,66 +78,102 @@ install_basic_deps() {
     fi
 }
 
-# Check Node.js installation
-check_nodejs() {
-    print_info "Checking Node.js installation..."
+# Install Node.js
+install_nodejs() {
+    print_info "Installing Node.js..."
     if command -v node &> /dev/null; then
         NODE_VERSION=$(node -v)
-        print_success "Node.js is installed: $NODE_VERSION"
-    else
-        print_error "Node.js is not installed!"
-        echo "Please install Node.js 16+ from: https://nodejs.org/"
-        exit 1
+        print_success "Node.js is already installed: $NODE_VERSION"
+        return
     fi
+    
+    if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
+        # Install Node.js 20.x LTS
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+        apt-get install -y nodejs
+        print_success "Node.js installed successfully"
+    elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
+        curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
+        yum install -y nodejs
+        print_success "Node.js installed successfully"
+    fi
+    
+    NODE_VERSION=$(node -v)
+    print_success "Node.js version: $NODE_VERSION"
 }
 
-# Check Yarn installation
-check_yarn() {
-    print_info "Checking Yarn installation..."
+# Install Yarn
+install_yarn() {
+    print_info "Installing Yarn..."
     if command -v yarn &> /dev/null; then
         YARN_VERSION=$(yarn -v)
-        print_success "Yarn is installed: $YARN_VERSION"
-    else
-        print_info "Yarn is not installed. Installing Yarn..."
-        npm install -g yarn
-        print_success "Yarn installed successfully"
+        print_success "Yarn is already installed: $YARN_VERSION"
+        return
     fi
+    
+    npm install -g yarn
+    YARN_VERSION=$(yarn -v)
+    print_success "Yarn installed successfully: $YARN_VERSION"
 }
 
-# Check Python installation
-check_python() {
-    print_info "Checking Python installation..."
+# Install Python
+install_python() {
+    print_info "Installing Python..."
     if command -v python3 &> /dev/null; then
         PYTHON_VERSION=$(python3 --version)
-        print_success "Python is installed: $PYTHON_VERSION"
+        print_success "Python is already installed: $PYTHON_VERSION"
     else
-        print_error "Python 3 is not installed!"
-        echo "Please install Python 3.8+ from: https://www.python.org/"
-        exit 1
+        if [[ "$OS" == "ubuntu" ]] || [[ "$OS" == "debian" ]]; then
+            apt-get install -y python3 python3-pip python3-venv
+            print_success "Python installed successfully"
+        elif [[ "$OS" == "centos" ]] || [[ "$OS" == "rhel" ]]; then
+            yum install -y python3 python3-pip
+            print_success "Python installed successfully"
+        fi
     fi
+    
+    # Ensure pip is installed
+    if ! command -v pip3 &> /dev/null; then
+        print_info "Installing pip..."
+        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        python3 get-pip.py
+        rm get-pip.py
+        print_success "pip installed successfully"
+    fi
+    
+    PYTHON_VERSION=$(python3 --version)
+    PIP_VERSION=$(pip3 --version)
+    print_success "Python version: $PYTHON_VERSION"
+    print_success "pip version: $PIP_VERSION"
 }
 
-# Check pip installation
-check_pip() {
-    print_info "Checking pip installation..."
-    if command -v pip3 &> /dev/null; then
-        PIP_VERSION=$(pip3 --version)
-        print_success "pip is installed: $PIP_VERSION"
-    else
-        print_error "pip3 is not installed!"
-        echo "Please install pip3"
-        exit 1
-    fi
-}
-
-# Check MongoDB installation (optional)
-check_mongodb() {
+# Install MongoDB (optional - for local development)
+install_mongodb() {
     print_info "Checking MongoDB..."
     if command -v mongod &> /dev/null; then
         MONGO_VERSION=$(mongod --version | head -n 1)
-        print_success "MongoDB is installed: $MONGO_VERSION"
+        print_success "MongoDB is already installed: $MONGO_VERSION"
+        return
+    fi
+    
+    read -p "Do you want to install MongoDB locally? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_info "Installing MongoDB..."
+        if [[ "$OS" == "ubuntu" ]]; then
+            # Install MongoDB 7.0 for Ubuntu
+            curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+            echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+            apt-get update
+            apt-get install -y mongodb-org
+            systemctl start mongod
+            systemctl enable mongod
+            print_success "MongoDB installed and started"
+        else
+            print_info "Skipping MongoDB installation. Please install manually or use remote MongoDB."
+        fi
     else
-        print_info "MongoDB is not installed locally (you may be using a remote MongoDB)"
+        print_info "Skipping MongoDB installation. Make sure you have MongoDB connection configured."
     fi
 }
 
