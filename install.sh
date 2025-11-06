@@ -251,40 +251,54 @@ install_frontend() {
     cd /app
 }
 
-# Check environment files
-check_env_files() {
-    print_info "Checking environment files..."
+# Create environment files
+create_env_files() {
+    print_info "Creating environment configuration files..."
     
-    # Check backend .env
-    if [ -f "/app/backend/.env" ]; then
-        print_success "Backend .env file exists"
+    # Create backend .env
+    if [ ! -f "/app/backend/.env" ]; then
+        print_info "Creating backend .env file..."
+        cat > /app/backend/.env << 'EOF'
+MONGO_URL=mongodb://localhost:27017
+DB_NAME=fluxiptv
+CORS_ORIGINS=*
+EOF
+        print_success "Backend .env created"
     else
-        print_error "Backend .env file not found!"
-        echo "Please create /app/backend/.env with required variables"
-        exit 1
+        print_success "Backend .env already exists"
     fi
     
-    # Check frontend .env
-    if [ -f "/app/frontend/.env" ]; then
-        print_success "Frontend .env file exists"
-    else
-        print_error "Frontend .env file not found!"
-        echo "Please create /app/frontend/.env with required variables"
-        exit 1
-    fi
-}
-
-# Display MongoDB connection info
-display_mongo_info() {
-    print_info "MongoDB Configuration..."
-    if [ -f "/app/backend/.env" ]; then
-        MONGO_URL=$(grep MONGO_URL /app/backend/.env | cut -d '=' -f2)
-        if [ -n "$MONGO_URL" ]; then
-            print_success "MongoDB URL is configured"
+    # Create frontend .env
+    if [ ! -f "/app/frontend/.env" ]; then
+        print_info "Creating frontend .env file..."
+        
+        # Try to detect the server's public URL
+        if [ -n "$REACT_APP_BACKEND_URL" ]; then
+            BACKEND_URL="$REACT_APP_BACKEND_URL"
         else
-            print_error "MONGO_URL not found in backend/.env"
+            BACKEND_URL="http://localhost:8001"
         fi
+        
+        cat > /app/frontend/.env << EOF
+REACT_APP_BACKEND_URL=${BACKEND_URL}
+WDS_SOCKET_PORT=443
+REACT_APP_ENABLE_VISUAL_EDITS=false
+ENABLE_HEALTH_CHECK=false
+EOF
+        print_success "Frontend .env created"
+    else
+        print_success "Frontend .env already exists"
     fi
+    
+    # Display configuration
+    echo ""
+    print_info "Environment Configuration:"
+    echo "  Backend .env:"
+    echo "    - MONGO_URL: $(grep MONGO_URL /app/backend/.env | cut -d'=' -f2)"
+    echo "    - DB_NAME: $(grep DB_NAME /app/backend/.env | cut -d'=' -f2)"
+    echo "  Frontend .env:"
+    echo "    - REACT_APP_BACKEND_URL: $(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d'=' -f2)"
+    echo ""
 }
 
 # Create start script
