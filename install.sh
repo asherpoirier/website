@@ -255,6 +255,10 @@ install_frontend() {
 create_env_files() {
     print_info "Creating environment configuration files..."
     
+    # Ensure directories exist
+    mkdir -p /app/backend
+    mkdir -p /app/frontend
+    
     # Create backend .env
     if [ ! -f "/app/backend/.env" ]; then
         print_info "Creating backend .env file..."
@@ -294,10 +298,14 @@ EOF
     echo ""
     print_info "Environment Configuration:"
     echo "  Backend .env:"
-    echo "    - MONGO_URL: $(grep MONGO_URL /app/backend/.env | cut -d'=' -f2)"
-    echo "    - DB_NAME: $(grep DB_NAME /app/backend/.env | cut -d'=' -f2)"
+    if [ -f "/app/backend/.env" ]; then
+        echo "    - MONGO_URL: $(grep MONGO_URL /app/backend/.env | cut -d'=' -f2)"
+        echo "    - DB_NAME: $(grep DB_NAME /app/backend/.env | cut -d'=' -f2)"
+    fi
     echo "  Frontend .env:"
-    echo "    - REACT_APP_BACKEND_URL: $(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d'=' -f2)"
+    if [ -f "/app/frontend/.env" ]; then
+        echo "    - REACT_APP_BACKEND_URL: $(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d'=' -f2)"
+    fi
     echo ""
 }
 
